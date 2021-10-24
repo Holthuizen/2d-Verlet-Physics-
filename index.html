@@ -5,10 +5,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2d Physics engine by Carlos</title>
+    <script src="Vector2.js"></script>
     <script src="main.js"></script>
 </head>
 <body>
-    <canvas id="canvas" width="100%" height="100%" style="border:1px solid #000000; background-color:grey">
+
+    <div class="container" style="margin-left:10px">
+        <button id="play" onclick="TogglePlay()">Play</button>
+        <button id="Debug" onclick="ToggleDebug()">Debug</button>
+        <br>
+        <br>
+        <canvas id="canvas" style="border:1px solid #000000; background-color:grey;">
+    </div>
     
 </body>
 </html>
