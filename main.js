@@ -1,6 +1,7 @@
 //globals
 var playing = false; 
 var debug = false; 
+var shapes = [];
 var points = [];
 var sticks = [];
 
@@ -16,8 +17,6 @@ let frameCount= 0;
 let loopCount = 0; 
 
 
-
-
 function update(){
     requestAnimationFrame(update); 
     
@@ -25,11 +24,13 @@ function update(){
     if(playing){
         ctx.clearRect(0,0,width,height);
         updatePoints();
-        for(let p = 0; p < 5; p++){
+        //loop to increase stability
+        for(let p = 0; p < 3; p++){
             updateSticks();
             constrainPoints(width,height); 
         }
-        drawPoints(ctx);
+
+        //drawPoints(ctx);
         drawSticks(ctx);
 
         //fps
@@ -44,23 +45,49 @@ function update(){
 }
 
 
-//points
-
-points.push(new Point(width/2, height/2, 5))
-points.push(new Point(width/2+200, height/2, 5))
-points.push(new Point(width/2, height/2+200, 5))
-points.push(new Point(width/2+200, height/2+200,5))
-
-sticks.push(new Stick(0,1));
-sticks.push(new Stick(0,2));
-sticks.push(new Stick(2,3));
-sticks.push(new Stick(1,3));
-sticks.push(new Stick(0,3));
-
+//shapes
+for(let i = 0; i < 10; i++){
+    let x = Math.random() * width; 
+    let y = Math.random() * height; 
+    if(i % 3){
+        Triangle(x,y,Math.random()*200+30,Math.random()*200+30);
+    }else{
+        Rect(x,y,Math.random()*200);
+    }
+}
 
 //start
 update();
 console.log("Script Loaded")
+}
+
+/* -----------------------------------------------------------
+Primitives Shapes Classes
+-------------------------------------------------------------*/
+function Rect(x,y,size){
+    points.push(new Point(x, y,10,0,5))
+    points.push(new Point(x+size,y, 5))
+    points.push(new Point(x,y+size, 5))
+    points.push(new Point(x+size, y+size,5))
+
+    let offset = points.length - 4; 
+    sticks.push(new Stick(offset +0,offset +1));
+    sticks.push(new Stick(offset +0,offset +2));
+    sticks.push(new Stick(offset +2,offset +3));
+    sticks.push(new Stick(offset +1,offset +3));
+    sticks.push(new Stick(offset +0,offset +3));
+}
+
+
+function Triangle(x,y,h,b){
+    points.push(new Point(x, y,10,0,5))
+    points.push(new Point(x+b/2,y+h, 5))
+    points.push(new Point(x-b/2,y+h, 5))
+
+    let offset = points.length - 3; 
+    sticks.push(new Stick(offset +0,offset +1));
+    sticks.push(new Stick(offset +0,offset +2));
+    sticks.push(new Stick(offset +1,offset +2));
 }
 
 
@@ -68,18 +95,25 @@ console.log("Script Loaded")
 ENGINE Classes
 -------------------------------------------------------------*/
 
+class Shapes{
+    constructor(){
+        
+    }
+}
+
+
 class Point {
-    constructor(x, y,r=1,simulated=true) {
+    constructor(x, y,vx=1,vy=1,r=3) {
         if(!x || !y){
             console.error("point x and y values are required!")
             return
         }
         this.x = x; 
         this.y = y;
-        this.oldx = x-5; 
-        this.oldy = y+5; 
+        this.oldx = x+vx; 
+        this.oldy = y+vy; 
         this.r = r;
-        this.simulated = simulated; 
+        this.simulated = true; 
     }
 
     get pos(){
@@ -116,9 +150,8 @@ ENGINE Physics
 //Verlet Integration / physics
 function updatePoints(){
     points.forEach(p => {
-        let bounce = 0.9;
-        let gravity = 0.5; 
-        let friction = 0.99; 
+        let gravity = 0.1; 
+        let friction = 0.999; 
         let vx = p.vx * friction; 
         let vy = p.vy * friction; 
 
@@ -137,7 +170,7 @@ function updatePoints(){
 function constrainPoints(width, height){
 
     points.forEach(p => {
-        let bounce = 0.9;
+        let bounce = 0.99;
         let vx = p.vx ; 
         let vy = p.vy ; 
         //bounce
@@ -243,4 +276,9 @@ function FPS(last,current){
 
 function print(msg){
     console.log(msg);
+}
+
+//not great but good enough
+const uid = function(){
+    return Date.now().toString(36) + Math.random().toString(36).substr(2);
 }
