@@ -144,9 +144,68 @@ class Stick{
 }
 
 
+class Line{
+    constructor(x0,y0,x1,y1){
+        this.x0 = x0; 
+        this.y0 = y0; 
+        this.x1 = x1; 
+        this.y1 = y1; 
+    }
+}
+
 /* -----------------------------------------------------------
 ENGINE Physics
 -------------------------------------------------------------*/
+
+//this is my dumb attempt to make a collision resolution algorithm
+function pointLineCollision(width, height){
+
+    points.forEach(p => {
+        let bounce = 0.99;
+        let vx = p.vx ; 
+        let vy = p.vy ; 
+        
+        let lineA = new Line(p.oldx,p.oldy, vx,vy); 
+
+        for(stick in sticks){
+            let lineB = new Line(stick.p0.x, stick.p0.y, stick.p1.x, stick.p1.y); 
+            //todo  line intersect a vs b
+            //if true, push this.point back a long lineA to the intersect point. 
+        }
+        
+        //bounce
+        if (p.x < 0){
+            p.x = 0; 
+            p.oldx = p.x + vx*bounce; 
+        }
+        if (p.x > width){
+            p.x = width; 
+            p.oldx = p.x + vx*bounce; 
+        }
+
+        if(p.y < 0){
+            p.y = 0; 
+            p.oldy += vy*bounce; //this can be negative?
+        }
+
+        if(p.y > height){
+            p.y = height; 
+            p.oldy = p.y+vy*bounce; 
+        }
+
+
+    });
+
+}
+
+function lineIntersect(){
+    /*
+        function that returns the coordinates of a line intersection OR the length from beginning of a line. 
+    */
+}
+
+
+
 //Verlet Integration / physics
 function updatePoints(){
     points.forEach(p => {
