@@ -10,24 +10,29 @@ window.onload = () =>{
     //set screen size
     width = canvas.width = window.innerWidth - (window.innerWidth /6); 
     height = canvas.height = window.innerHeight - (window.innerHeight/3);
-
+    let rect = canvas.getBoundingClientRect();
 
     document.body.addEventListener("mousemove", function(event) {
         ctx.clearRect(0, 0, width, height);
-        mouseX = event.clientX;
-        mouseY = event.clientY;
+        mouseX = event.clientX -rect.left;
+        mouseY = event.clientY -rect.top;
     });
     
+    document.body.addEventListener('click',clickHandler,false)
+
 
 
     start()
     update();
     loop();
+ 
     function loop(){
-        update();
+        if(playing){
+            update();
+        }
         requestAnimationFrame(loop);
     }
 
-    ctx.fillStyle = "blue"; 
+    
     console.log("setup completed")
 };

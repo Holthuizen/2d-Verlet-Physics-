@@ -58,7 +58,7 @@ for(let i = 0; i < 10; i++){
 
 //start
 update();
-console.log("Script Loaded")
+    console.log("Script Loaded")
 }
 
 /* -----------------------------------------------------------
@@ -95,10 +95,99 @@ function Triangle(x,y,h,b){
 ENGINE Classes
 -------------------------------------------------------------*/
 
-class Shapes{
-    constructor(){
-        
+
+//todo integrate all functions into this class
+class Shape{
+    constructor(x,y){
+        this.id = uid(); 
+        this.x = x; 
+        this.y = y; 
+        this.points = []
+        this.sticks = []
     }
+
+    addPoint(p){
+      this.points.push(p);
+    }
+
+    draw(){
+        this.points.forEach(p => {
+            p.draw(ctx);
+        });
+    }
+
+    //Verlet Integration / physics
+    updatePoints(){
+    this.points.forEach(p => {
+        let gravity = 0.1; 
+        let friction = 0.999; 
+        let vx = p.vx * friction; 
+        let vy = p.vy * friction; 
+
+        p.oldx = p.x; 
+        p.oldy = p.y; 
+
+        p.x += vx; 
+        p.y += vy; 
+        
+        //forces
+        p.y += gravity; 
+        
+    });
+}
+
+    constrainPoints(width, height){
+
+    this.points.forEach(p => {
+        let bounce = 0.99;
+        let vx = p.vx ; 
+        let vy = p.vy ; 
+        //bounce
+        if (p.x < 0){
+            p.x = 0; 
+            p.oldx = p.x + vx*bounce; 
+        }
+        if (p.x > width){
+            p.x = width; 
+            p.oldx = p.x + vx*bounce; 
+        }
+
+        if(p.y < 0){
+            p.y = 0; 
+            p.oldy += vy*bounce; //this can be negative?
+        }
+
+        if(p.y > height){
+            p.y = height; 
+            p.oldy = p.y+vy*bounce; 
+        }
+
+
+    });
+
+}
+
+ updateSticks(){
+    for (let index = 0; index < this.sticks.length; index++) {
+        const s = this.sticks[index],
+        dx = s.p1.x - s.p0.x,
+        dy = s.p1.y - s.p0.y, 
+        distance = Math.sqrt(dx*dx + dy*dy), 
+        diff = s.length - distance,
+        percent = diff /distance / 2, 
+        offsetX = dx*percent,
+        offsetY = dy*percent; 
+
+        s.p0.x -= offsetX; 
+        s.p0.y -= offsetY;
+        s.p1.x += offsetX; 
+        s.p1.y += offsetY;  
+    }
+}
+
+
+
+
 }
 
 

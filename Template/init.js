@@ -23,11 +23,14 @@ window.onload = () =>{
     start()
     update();
     loop();
+
     function loop(){
-        update();
+        if(playing){
+            update();
+        }
         requestAnimationFrame(loop);
     }
 
-    ctx.fillStyle = "blue"; 
+    
     console.log("setup completed")
 };

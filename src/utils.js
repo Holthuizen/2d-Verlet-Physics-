@@ -19,7 +19,19 @@
     }
 
 
+    function insideRect(x,y,width,height){
+        if( (x  > width) || (x < 0)){
+            return false; 
+        }
+        if( (y > height) || (y < 0)){
+            return false; 
+        }
+
+        return true
+    }
+    
     //not great but good enough
     const uid = function(){
         return Date.now().toString(36) + Math.random().toString(36).substr(2);
     }
+
